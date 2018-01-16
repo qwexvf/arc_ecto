@@ -101,4 +101,9 @@ defmodule ArcTest.Ecto.Schema do
     changeset = TestUser.path_changeset(%TestUser{}, %{"avatar" => "/path/to/my/file.png"})
     assert called DummyDefinition.store({"/path/to/my/file.png", %TestUser{}})
   end
+
+  test_with_mock "casting binary data struct attachments", DummyDefinition, [store: fn({%{filename: "/path/to/my/file.png", binary: <<1, 2, 3>>}, %TestUser{}}) -> {:ok, "file.png"} end] do
+    changeset = TestUser.changeset(%TestUser{}, %{"avatar" => %{filename: "/path/to/my/file.png", binary: <<1, 2, 3>>}})
+    assert called DummyDefinition.store({%{filename: "/path/to/my/file.png", binary: <<1, 2, 3>>}, %TestUser{}})
+  end
 end
